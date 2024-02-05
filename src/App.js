@@ -1,33 +1,93 @@
-import { useState } from 'react';
+import { useImmer } from 'use-immer';
 
-export default function RequestTracker() {
-  const [pending, setPending] = useState(0);
-  const [completed, setCompleted] = useState(0);
 
-  async function handleClick() {
-    setPending(p=> p + 1);
-    await delay(3000);
-    setPending(p=> p - 1);
-    setCompleted(c=> c + 1);
+export default function Form() {
+
+  const [person, updatePerson] = useImmer({
+    name: 'Hamza Ali Doğan',
+    artwork: {
+      title: 'Kırmızı Hayaller',
+      city: 'Denizli',
+      image: 'https://i.imgur.com/Sd1AgUOm.jpg',
+    }
+  });
+
+
+  function handleNameChange(e) {
+    updatePerson(draft => {
+      draft.name = e.target.value;
+    });
   }
 
-  return (
-    <>
-      <h3>
-        Pending: {pending}
-      </h3>
-      <h3>
-        Completed: {completed}
-      </h3>
-      <button onClick={handleClick}>
-        Buy     
-      </button>
-    </>
-  );
-}
+  function handleTitleChange(e) {
+    updatePerson(draft => {
+      draft.artwork.title = e.target.value;
+    });
+  }
 
-function delay(ms) {
-  return new Promise(resolve => {
-    setTimeout(resolve, ms);
-  });
+
+  function handleCityChange(e) {
+    updatePerson(draft => {
+      draft.artwork.city = e.target.value;
+    });
+  }
+
+  function handleImageChange(e) {
+    updatePerson(draft => {
+      draft.artwork.image = e.target.value;
+    });
+  }
+
+
+  return (
+
+    <>
+      <label>
+        Name:
+        <input
+          value={person.name}
+          onChange={handleNameChange}
+        />
+      </label>
+
+      <label>
+        Title:
+        <input
+          value={person.artwork.title}
+          onChange={handleTitleChange}
+        />
+      </label>
+
+      <label>
+        City:
+        <input
+          value={person.artwork.city}
+          onChange={handleCityChange}
+        />
+      </label>
+
+      <label>
+        Image :
+        <input
+          value={person.artwork.image}
+          onChange={handleImageChange}
+        />
+      </label>
+
+      <p>
+        <i>{person.artwork.title}</i>
+        {' by '}
+        {person.name}
+        <br />
+        (located in {person.artwork.city})
+      </p>
+      <img
+        src={person.artwork.image}
+        alt={person.artwork.title}
+      />
+
+    </>
+
+
+  );
 }
