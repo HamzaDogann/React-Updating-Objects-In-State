@@ -1,70 +1,164 @@
-# Getting Started with Create React App
+# Updating Objects in State
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React uygulamalarında, bileşenlerin durumunu yönetmek önemlidir ve bu durum içinde nesneleri güncellemek sıkça karşılaşılan bir ihtiyaçtır. Bu belgede, React'te durum içindeki nesnelerin nasıl güncelleneceğini ve bu süreçte dikkat edilmesi gereken konuları ele alacağız.
 
-## Available Scripts
+## Nedir?
 
-In the project directory, you can run:
+React'te bir bileşenin durumu (state), bileşenin içinde tutulan verilerin bir temsilidir. Durumu güncellemek, kullanıcı etkileşimleri veya veri değişiklikleri gibi olaylara yanıt olarak bileşenin yeniden render edilmesini sağlar. Nesne tipindeki durumları güncellerken, mevcut nesnenin değiştirilmesi yerine, genellikle bir kopyası oluşturulur ve bu kopya üzerinde değişiklikler yapılır.
 
-### `npm start`
+## Dikkat Edilmesi Gereken Konular
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Referans Eşleşmesi**: Durum nesnelerini güncellerken, referans eşleşmesine dikkat etmek önemlidir. React, bir bileşenin render edilip edilmeyeceğini referans eşleşmesiyle belirler. Bu nedenle, durum nesnelerini güncellerken, önceki durum nesnesinin referansını korumak önemlidir.
+- **Doğrudan Değişiklik Yapmamak**: Durum nesnelerini güncellerken, doğrudan değişiklik yapmaktan kaçınılmalıdır. React, değişmemiş durum nesnelerini algılamak için referans eşleşmesini kullanır. Bu nedenle, mevcut durum nesnesini doğrudan değiştirmek yerine, bir kopya oluşturmak ve onu güncellemek daha iyidir.
+- **setState Kullanımı**: setState fonksiyonunu kullanarak durumu güncellemek, React uygulamalarında önerilen yöntemdir. setState, bileşenin yeniden render edilmesini ve güncellenmiş durumun geçerli olmasını sağlar.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Pratik Kullanımlar
 
-### `npm test`
+- **Form Verilerini Güncelleme**: Kullanıcı bir formu doldurduğunda, form verilerini durumda güncellemek önemlidir. Bu şekilde, kullanıcı formu doldurduğunda, form verileri bileşenin durumunda saklanabilir ve gerektiğinde güncellenebilir.
+- **Liste Elemanlarını Güncelleme**: Bir liste içindeki öğeleri eklemek, kaldırmak veya güncellemek genellikle durum yönetimi gerektirir. Liste elemanları bir nesne olarak saklandığında, bu elemanları güncellemek için durumu güncellemek gerekir.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Örnek Kod Parçacığı
 
-### `npm run build`
+```javascript
+import React, { useState } from 'react';
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+function App() {
+  const [user, setUser] = useState({ name: '', email: '' });
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUser(prevUser => ({
+      ...prevUser,
+      [name]: value
+    }));
+  };
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+  return (
+    <div>
+      <input
+        type="text"
+        name="name"
+        value={user.name}
+        onChange={handleChange}
+        placeholder="Name"
+      />
+      <input
+        type="email"
+        name="email"
+        value={user.email}
+        onChange={handleChange}
+        placeholder="Email"
+      />
+    </div>
+  );
+}
+```
+## Immer nedir ve nasıl pratiklik sağlar?
 
-### `npm run eject`
+Immer, değişken durumları güncellemeyi kolaylaştıran bir kütüphanedir. Özellikle, JavaScript'te nesne veya dizileri değiştirmek ve bu değişiklikleri izlemek zor olabilir. Immer, bu işlemi basitleştirir ve okunabilirliği artırır.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- Daha okunabilir kod: Immer, karmaşık nesne veya diziler üzerinde yapılacak değişiklikleri daha okunabilir hale getirir. Bu, kodun anlaşılmasını ve bakımını kolaylaştırır.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Yan etkilerden kaçınma: Orijinal veriyi değiştirmeden güncellemeler yaparak, yan etkilerden kaçınabilirsiniz. Bu, kodunuzun daha güvenli ve öngörülebilir olmasını sağlar.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- İşlevsel programlama prensiplerini destekler: Immer, işlevsel programlama prensiplerini destekler ve değişken durumları değiştirmek için işlevsel bir yaklaşım sunar. Bu da daha temiz ve modüler kod yazmanıza olanak tanır.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Performans: Immer, güncelleme işlemlerini etkili bir şekilde yönetir ve performans kaybını minimize eder. Bu sayede, büyük veri yapıları üzerinde bile verimli bir şekilde çalışabilirsiniz.
 
-## Learn More
+```javascript
+export default App;
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+import { useImmer } from 'use-immer';
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+export default function Form() {
 
-### Analyzing the Bundle Size
+  const [person, updatePerson] = useImmer({
+    name: 'Hamza Ali Doğan',
+    artwork: {
+      title: 'Mutluluğun Resmi',
+      city: 'Denizli',
+      image: 'https://i.imgur.com/Sd1AgUOm.jpg',
+    }
+  });
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-### Making a Progressive Web App
+  function handleNameChange(e) {
+    updatePerson(draft => {
+      draft.name = e.target.value;
+    });
+  }
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+  function handleTitleChange(e) {
+    updatePerson(draft => {
+      draft.artwork.title = e.target.value;
+    });
+  }
 
-### Advanced Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+  function handleCityChange(e) {
+    updatePerson(draft => {
+      draft.artwork.city = e.target.value;
+    });
+  }
 
-### Deployment
+  function handleImageChange(e) {
+    updatePerson(draft => {
+      draft.artwork.image = e.target.value;
+    });
+  }
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+  return (
 
-### `npm run build` fails to minify
+    <>
+      <label>
+        Name:
+        <input
+          value={person.name}
+          onChange={handleNameChange}
+        />
+      </label>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+      <label>
+        Title:
+        <input
+          value={person.artwork.title}
+          onChange={handleTitleChange}
+        />
+      </label>
+
+      <label>
+        City:
+        <input
+          value={person.artwork.city}
+          onChange={handleCityChange}
+        />
+      </label>
+
+      <label>
+        Image :
+        <input
+          value={person.artwork.image}
+          onChange={handleImageChange}
+        />
+      </label>
+
+      <p>
+        <i>{person.artwork.title}</i>
+        {' by '}
+        {person.name}
+        <br />
+        (located in {person.artwork.city})
+      </p>
+      <img
+        src={person.artwork.image}
+        alt={person.artwork.title}
+      />
+
+    </>
+
+
+  );
+}
+```
